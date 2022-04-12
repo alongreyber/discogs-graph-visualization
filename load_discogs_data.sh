@@ -3,7 +3,7 @@ python3 run.py \
         --export artist --export label \
         --export master --export release \
         --output /tmp/csv-files \
-        /dump \
+        ../dump \
 
 python3 postgresql/psql.py < postgresql/sql/CreateTables.sql
 python3 postgresql/importcsv.py /tmp/csv-files/*

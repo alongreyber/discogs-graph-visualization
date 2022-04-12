@@ -2,7 +2,7 @@
 
 ## Installation
 
-### Start Postgres
+### Start Postgres (in docker or locally)
 
 `docker-compose up`
 
@@ -11,5 +11,5 @@
 ```
 cd dump && ./get_latest_dumps.sh
 docker build -t load_discogs -f Dockerfile.load-discogs .
-docker run -it load_discogs
+docker run -it -v $(pwd)/dump:/dump load_discogs
 ```
