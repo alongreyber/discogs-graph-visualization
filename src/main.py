@@ -12,11 +12,6 @@ ARTIST_COLOR = "red"
 def sanitize(s):
     return re.sub(r'[^a-zA-Z0-9 ]', '', s)
 
-allowed_roles = [
-    "Mastered By", "Mixed By", "Produced By", "Performer", "Written By", "Written-By",
-    "Producer"
-]
-
 # Create network object
 network = Network(height='750px', width='100%', font_color="#ffffff")
 network.set_options(
@@ -53,13 +48,27 @@ conn = psycopg2.connect("dbname=discogs user=alon password=the3Qguy")
 # Open a cursor to perform database operations
 cur = conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 
-# Get release
-master_title = "An Evening With Silk Sonic"
-# master_title = "Head Hunters"
-cur.execute("SELECT * FROM master WHERE title = %s;", [master_title])
-master = cur.fetchone()
 
-print(master.main_release)
+master_title = input("Enter an album name: ")
+# Get release
+# master_title = "An Evening With Silk Sonic"
+# master_title = "Head Hunters"
+cur.execute(
+    """
+    SELECT master.id, artist_name, master.year, main_release, title
+    FROM master
+    JOIN master_artist ON master_id = master.id
+    WHERE title = %s;
+    """,
+    [master_title]
+)
+
+all_masters = cur.fetchall()
+for i, m in enumerate(all_masters):
+    print(f"{i:<2} | {master_title} - {m.artist_name} ({m.year})")
+
+master_index = int(input("Please select which album you would like: "))
+master = all_masters[master_index]
 
 # Add to graph
 network.add_node(
